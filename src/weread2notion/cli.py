@@ -329,6 +329,11 @@ def insert_to_notion(bookName, bookId, cover, sort, author, isbn, rating, catego
             )
 
     properties = build_notion_properties(raw_properties)
+    # Keep the gallery preview populated when a synced page is rebuilt.
+    if get_property_type("封面") == "files":
+        properties["封面"] = {
+            "files": [{"name": "封面", "type": "external", "external": {"url": cover}}]
+        }
     icon = get_icon(cover)
     # notion api 限制100个block
     response = client.pages.create(parent=parent, icon=icon,cover=icon, properties=properties)
